@@ -217,28 +217,28 @@ const tourData: Record<number, Tour> = {
       ],
     
     },
-  reviewsList: [
-  {
-    name: "Emily W.",
-    rating: 5,
-    comment: "Absolutely stunning day trip! The wine tasting was perfect and Pisa was magical.",
-    date: "2025-05-21",
-  },
-  {
-    name: "Carlos R.",
-    rating: 4,
-    comment: "Well organized tour and friendly guide. Would recommend for first-time visitors.",
-    date: "2025-06-10",
-  },
-  {
-    name: "Lina H.",
-    rating: 5,
-    comment: "Loved every stop, especially San Gimignano! Would do it again.",
-    date: "2025-06-05",
-  },
-],
-  },
-}
+    reviewsList: [
+        {
+          name: "Emily W.",
+          rating: 5,
+          comment: "Absolutely stunning day trip! The wine tasting was perfect and Pisa was magical.",
+          date: "2025-05-21",
+        },
+        {
+          name: "Carlos R.",
+          rating: 4,
+          comment: "Well organized tour and friendly guide. Would recommend for first-time visitors.",
+          date: "2025-06-10",
+        },
+        {
+          name: "Lina H.",
+          rating: 5,
+          comment: "Loved every stop, especially San Gimignano! Would do it again.",
+          date: "2025-06-05",
+        },
+      ],
+    },
+  }
 
 export default function ProductPage({ params }: { params: { id: string } }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
