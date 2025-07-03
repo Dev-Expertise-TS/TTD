@@ -27,7 +27,6 @@ import {
   RefreshCw,
   AlertCircle,
 } from "lucide-react"
-import { useState } from "react";
 
 interface TourOption {
   id: number
@@ -952,74 +951,6 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                   ))}
                 </div>
               </div>
-              function ReviewSection() {
-  const [reviews, setReviews] = useState([
-    { name: "홍길동", rating: 5, content: "정말 멋진 경험이었어요!", date: "2025-07-03" },
-  ]);
-  const [form, setForm] = useState({ name: "", rating: 5, content: "" });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setReviews([
-      { ...form, date: new Date().toISOString().slice(0, 10) },
-      ...reviews,
-    ]);
-    setForm({ name: "", rating: 5, content: "" });
-  };
-
-  return (
-    <div className="mt-12">
-      <h2 className="text-2xl font-bold mb-4">후기</h2>
-      <form onSubmit={handleSubmit} className="mb-6 flex flex-col gap-2 md:flex-row md:items-center">
-        <input
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          placeholder="이름"
-          className="border rounded p-2 w-full md:w-32"
-          required
-        />
-        <select
-          name="rating"
-          value={form.rating}
-          onChange={handleChange}
-          className="border rounded p-2 w-full md:w-24"
-        >
-          {[1,2,3,4,5].map((n) => (
-            <option key={n} value={n}>{n}점</option>
-          ))}
-        </select>
-        <input
-          name="content"
-          value={form.content}
-          onChange={handleChange}
-          placeholder="후기 내용"
-          className="border rounded p-2 flex-1"
-          required
-        />
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-          등록
-        </button>
-      </form>
-      <ul>
-        {reviews.map((review, idx) => (
-          <li key={idx} className="border-b py-3">
-            <div className="flex items-center gap-2 font-semibold">
-              {review.name} <span className="text-yellow-500">{"★".repeat(review.rating)}</span>
-              <span className="text-xs text-gray-500 ml-2">{review.date}</span>
-            </div>
-            <div className="ml-2">{review.content}</div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-
             </CardContent>
           </Card>
         </div>
