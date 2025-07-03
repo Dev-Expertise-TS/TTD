@@ -35,6 +35,13 @@ interface TourOption {
   available: number
 }
 
+interface Review {
+  name: string
+  rating: number
+  comment: string
+  date: string
+}
+
 interface Tour {
   title: string
   price: number
@@ -75,6 +82,7 @@ interface Tour {
     additionalInfo: string[]
   }
   options: Record<string, TourOption[]>
+  reviewsList: Review[]
 }
 
 const tourData: Record<number, Tour> = {
@@ -953,6 +961,63 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               </div>
             </CardContent>
           </Card>
+          {/* Reviews Section */}
+<Card className="shadow-lg">
+  <CardContent className="p-8">
+    <h2 className="text-3xl font-bold mb-6">Traveler Reviews</h2>
+
+    {/* 리뷰 요약 */}
+    <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div>
+        <div className="text-6xl font-bold text-yellow-500">{tour.rating.toFixed(1)}</div>
+        <div className="text-lg text-gray-600">{tour.reviews} reviews</div>
+      </div>
+      <div className="col-span-2 space-y-2">
+        {[5, 4, 3, 2, 1].map((star) => {
+          const percentage = Math.floor(Math.random() * 100)
+          return (
+            <div key={star} className="flex items-center gap-3">
+              <div className="w-10 text-sm text-gray-700">{star} stars</div>
+              <div className="flex-1 bg-gray-200 rounded-full h-2">
+                <div className="bg-yellow-400 h-2 rounded-full" style={{ width: `${percentage}%` }}></div>
+              </div>
+              <div className="text-sm text-gray-600 w-10 text-right">{percentage}%</div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+
+    {/* 리뷰 리스트 */}
+    <div className="space-y-6">
+      {tour.reviewsList.map((review, index) => (
+        <div key={index} className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <div className="font-semibold text-gray-900">{review.name}</div>
+            <div className="text-sm text-gray-500">{new Date(review.date).toLocaleDateString()}</div>
+          </div>
+
+          <div className="flex items-center gap-1 mb-2">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                className={`h-4 w-4 ${i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+              />
+            ))}
+          </div>
+
+          <p className="text-gray-700">{review.comment}</p>
+
+          <div className="mt-4 text-sm text-gray-500 flex items-center gap-4">
+            <span>Was this review helpful?</span>
+            <button className="text-blue-600 hover:underline">Yes</button>
+            <button className="text-blue-600 hover:underline">No</button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </CardContent>
+</Card>
         </div>
       </div>
     </div>
