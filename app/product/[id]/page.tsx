@@ -1040,4 +1040,3 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     </div>
   )
 }
-Was this review helpful? Yes / No 부분이 후기 섹션 삭제 한 풀 코드를 tsx 파일로 줘
