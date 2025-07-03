@@ -26,6 +26,8 @@ import {
   Shield,
   RefreshCw,
   AlertCircle,
+  ThumbsUp,
+  MessageCircle,
 } from "lucide-react"
 
 interface TourOption {
@@ -33,6 +35,21 @@ interface TourOption {
   time: string
   price: number
   available: number
+}
+
+interface Review {
+  id: number
+  author: string
+  date: string
+  rating: number
+  content: string
+  helpful: number
+  images?: string[]
+  reply?: {
+    author: string
+    date: string
+    content: string
+  }
 }
 
 interface Tour {
@@ -75,6 +92,7 @@ interface Tour {
     additionalInfo: string[]
   }
   options: Record<string, TourOption[]>
+  reviewList: Review[]
 }
 
 const tourData: Record<number, Tour> = {
@@ -208,6 +226,80 @@ const tourData: Record<number, Tour> = {
         { id: 9, time: "05:00 PM", price: 280, available: 7 },
       ],
     },
+    reviewList: [
+      {
+        id: 1,
+        author: "Sarah Johnson",
+        date: "2024-12-15",
+        rating: 5,
+        content:
+          "This surfing experience was absolutely incredible! The instructors were patient and knowledgeable, making me feel comfortable despite being a complete beginner. The beach was stunning and not too crowded. I managed to stand up on the board within the first hour! The included refreshments and photo package were a nice bonus. Highly recommend this tour for anyone visiting Yogyakarta!",
+        helpful: 24,
+        images: [
+          "https://images.pexels.com/photos/1549196/pexels-photo-1549196.jpeg?auto=compress&cs=tinysrgb&w=800",
+          "https://images.pexels.com/photos/1295138/pexels-photo-1295138.jpeg?auto=compress&cs=tinysrgb&w=800",
+        ],
+      },
+      {
+        id: 2,
+        author: "Michael Chen",
+        date: "2024-12-10",
+        rating: 4,
+        content:
+          "Great experience overall! The instructors were professional and friendly. The only reason I'm giving 4 stars instead of 5 is because the group was slightly larger than expected, which meant less one-on-one time with the instructor. Still, I learned a lot and had an amazing time catching waves. The beach is beautiful and the equipment provided was in excellent condition.",
+        helpful: 18,
+      },
+      {
+        id: 3,
+        author: "Emma Wilson",
+        date: "2024-12-05",
+        rating: 5,
+        content:
+          "Perfect day out! As someone who has tried surfing a few times before, I found the instruction really helpful for improving my technique. The instructors were attentive and gave personalized tips. The photos they took were amazing quality - much better than I expected! The sunset at the end of our session was breathtaking. Would definitely book again next time I'm in the area.",
+        helpful: 32,
+        images: ["https://images.pexels.com/photos/1654698/pexels-photo-1654698.jpeg?auto=compress&cs=tinysrgb&w=800"],
+        reply: {
+          author: "TOURVIS Team",
+          date: "2024-12-06",
+          content:
+            "Thank you for your wonderful review, Emma! We're thrilled that you enjoyed the surfing experience and found the instruction helpful. Our photography team will be delighted to hear your feedback about the photos. We look forward to welcoming you back for another surfing adventure soon!",
+        },
+      },
+      {
+        id: 4,
+        author: "David Rodriguez",
+        date: "2024-11-28",
+        rating: 5,
+        content:
+          "What an amazing experience! The instructors were not only skilled but also very encouraging. As someone who was quite nervous about trying surfing, they really helped build my confidence. The beach location is simply stunning, and the whole experience felt very well organized from start to finish. The refreshments provided were a welcome touch after all that physical activity. Definitely worth every penny!",
+        helpful: 15,
+      },
+      {
+        id: 5,
+        author: "Aisha Patel",
+        date: "2024-11-20",
+        rating: 3,
+        content:
+          "Mixed feelings about this experience. The location and equipment were great, and I did manage to learn the basics of surfing. However, our session was cut short by about 30 minutes due to weather concerns, but we weren't offered any partial refund. The instructors were knowledgeable but seemed rushed. The photos were good quality but took over a week to receive.",
+        helpful: 7,
+        reply: {
+          author: "TOURVIS Team",
+          date: "2024-11-21",
+          content:
+            "Hello Aisha, thank you for your feedback. We apologize for the shortened session - safety is our priority when weather conditions change. We've noted your concerns about timing and photo delivery, and we're working to improve these aspects. Please contact our customer service team regarding compensation for the shortened session. We appreciate your honest review and hope to make it up to you in the future.",
+        },
+      },
+      {
+        id: 6,
+        author: "Thomas Brown",
+        date: "2024-11-15",
+        rating: 5,
+        content:
+          "Fantastic experience from start to finish! The pickup was on time, the instructors were friendly and professional, and the beach was absolutely beautiful. I was surprised by how quickly I was able to stand up on the board with their guidance. The small group size meant plenty of personal attention. The photos they took captured some amazing moments that I'll cherish forever. Highly recommend!",
+        helpful: 21,
+        images: ["https://images.pexels.com/photos/1295138/pexels-photo-1295138.jpeg?auto=compress&cs=tinysrgb&w=800"],
+      },
+    ],
   },
 }
 
@@ -219,6 +311,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
   const [currentMonth, setCurrentMonth] = useState(new Date(2025, 0)) // January 2025
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
   const [showStickyBar, setShowStickyBar] = useState(false)
+  const [reviewFilter, setReviewFilter] = useState("all")
+  const [reviewSort, setReviewSort] = useState("newest")
 
   const bookingSummaryRef = useRef<HTMLDivElement>(null)
   const tour = tourData[1]
@@ -335,6 +429,52 @@ export default function ProductPage({ params }: { params: { id: string } }) {
   }
 
   const availableOptions = selectedDate ? tour.options[selectedDate] || [] : []
+
+  // Filter and sort reviews
+  const filteredReviews = tour.reviewList.filter((review) => {
+    if (reviewFilter === "all") return true
+    return review.rating === Number.parseInt(reviewFilter)
+  })
+
+  const sortedReviews = [...filteredReviews].sort((a, b) => {
+    if (reviewSort === "newest") {
+      return new Date(b.date).getTime() - new Date(a.date).getTime()
+    } else if (reviewSort === "oldest") {
+      return new Date(a.date).getTime() - new Date(b.date).getTime()
+    } else if (reviewSort === "highest") {
+      return b.rating - a.rating
+    } else if (reviewSort === "lowest") {
+      return a.rating - b.rating
+    } else if (reviewSort === "helpful") {
+      return b.helpful - a.helpful
+    }
+    return 0
+  })
+
+  // Calculate rating statistics
+  const ratingCounts = [0, 0, 0, 0, 0] // 1-5 stars
+  tour.reviewList.forEach((review) => {
+    ratingCounts[review.rating - 1]++
+  })
+
+  const formatReviewDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+  }
+
+  // Render star rating
+  const renderStars = (rating: number) => {
+    return (
+      <div className="flex">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Star
+            key={star}
+            className={`h-4 w-4 ${star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+          />
+        ))}
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -951,6 +1091,176 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                   ))}
                 </div>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Customer Reviews Section */}
+          <Card className="shadow-lg">
+            <CardContent className="p-8">
+              <h2 className="text-3xl font-bold mb-6">Customer Reviews</h2>
+
+              {/* Rating Summary */}
+              <div className="bg-blue-50 rounded-lg p-6 mb-8">
+                <div className="flex flex-col md:flex-row gap-8">
+                  {/* Overall Rating */}
+                  <div className="flex-1 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-blue-200 pb-6 md:pb-0">
+                    <div className="text-5xl font-bold text-blue-600 mb-2">{tour.rating}</div>
+                    <div className="flex mb-2">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          className={`h-6 w-6 ${
+                            star <= Math.round(tour.rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <div className="text-gray-600">Based on {tour.reviews} reviews</div>
+                  </div>
+
+                  {/* Rating Breakdown */}
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg mb-4 text-center md:text-left">Rating Breakdown</h3>
+                    <div className="space-y-2">
+                      {[5, 4, 3, 2, 1].map((rating) => (
+                        <div key={rating} className="flex items-center gap-3">
+                          <div className="w-12 text-sm font-medium">{rating} stars</div>
+                          <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-yellow-400 rounded-full"
+                              style={{ width: `${(ratingCounts[rating - 1] / tour.reviewList.length) * 100}%` }}
+                            ></div>
+                          </div>
+                          <div className="w-10 text-sm text-gray-600 text-right">{ratingCounts[rating - 1]}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Filter and Sort Controls */}
+              <div className="flex flex-col md:flex-row justify-between gap-4 mb-8">
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => setReviewFilter("all")}
+                    className={`px-4 py-2 text-sm rounded-full ${
+                      reviewFilter === "all" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    All Reviews
+                  </button>
+                  {[5, 4, 3, 2, 1].map((rating) => (
+                    <button
+                      key={rating}
+                      onClick={() => setReviewFilter(rating.toString())}
+                      className={`px-4 py-2 text-sm rounded-full flex items-center gap-1 ${
+                        reviewFilter === rating.toString()
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                    >
+                      {rating}{" "}
+                      <Star
+                        className={`h-3 w-3 ${reviewFilter === rating.toString() ? "text-white" : "text-yellow-400"}`}
+                      />
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600">Sort by:</span>
+                  <select
+                    value={reviewSort}
+                    onChange={(e) => setReviewSort(e.target.value)}
+                    className="border rounded-md px-3 py-1 text-sm"
+                  >
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
+                    <option value="highest">Highest Rating</option>
+                    <option value="lowest">Lowest Rating</option>
+                    <option value="helpful">Most Helpful</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Reviews List */}
+              <div className="space-y-8">
+                {sortedReviews.length > 0 ? (
+                  sortedReviews.map((review) => (
+                    <div key={review.id} className="border-b pb-8">
+                      <div className="flex justify-between mb-3">
+                        <div>
+                          <h3 className="font-semibold text-lg">{review.author}</h3>
+                          <div className="text-sm text-gray-500">{formatReviewDate(review.date)}</div>
+                        </div>
+                        <div>{renderStars(review.rating)}</div>
+                      </div>
+
+                      <p className="text-gray-700 mb-4">{review.content}</p>
+
+                      {/* Review Images */}
+                      {review.images && review.images.length > 0 && (
+                        <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
+                          {review.images.map((image, index) => (
+                            <div key={index} className="relative w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+                              <Image
+                                src={image || "/placeholder.svg"}
+                                alt={`Review image ${index + 1}`}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Helpful Button */}
+                      <div className="flex items-center gap-2">
+                        <button className="flex items-center gap-1 text-sm text-gray-600 hover:text-blue-600">
+                          <ThumbsUp className="h-4 w-4" />
+                          Helpful ({review.helpful})
+                        </button>
+                      </div>
+
+                      {/* Reply from operator */}
+                      {review.reply && (
+                        <div className="mt-4 bg-gray-50 p-4 rounded-lg">
+                          <div className="flex items-center gap-2 mb-2">
+                            <MessageCircle className="h-4 w-4 text-blue-600" />
+                            <div className="font-medium text-blue-600">{review.reply.author}</div>
+                            <div className="text-xs text-gray-500">{formatReviewDate(review.reply.date)}</div>
+                          </div>
+                          <p className="text-gray-700 text-sm">{review.reply.content}</p>
+                        </div>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-gray-500">No reviews match your current filter.</div>
+                )}
+              </div>
+
+              {/* Pagination */}
+              {sortedReviews.length > 0 && (
+                <div className="flex justify-center mt-8">
+                  <div className="flex gap-2">
+                    <button className="w-10 h-10 rounded-lg bg-blue-600 text-white flex items-center justify-center">
+                      1
+                    </button>
+                    <button className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center">
+                      2
+                    </button>
+                    <button className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center">
+                      3
+                    </button>
+                    <span className="w-10 h-10 flex items-center justify-center">...</span>
+                    <button className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center">
+                      12
+                    </button>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
