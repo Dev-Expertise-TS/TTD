@@ -1029,11 +1029,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
           <p className="text-gray-700">{review.comment}</p>
 
-          <div className="mt-4 text-sm text-gray-500 flex items-center gap-4">
-            <span>Was this review helpful?</span>
-            <button className="text-blue-600 hover:underline">Yes</button>
-            <button className="text-blue-600 hover:underline">No</button>
-          </div>
+          
         </div>
       ))}
     </div>
@@ -1044,3 +1040,4 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     </div>
   )
 }
+Was this review helpful? Yes / No 부분이 후기 섹션 삭제 한 풀 코드를 tsx 파일로 줘
