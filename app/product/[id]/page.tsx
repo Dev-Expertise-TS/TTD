@@ -215,7 +215,9 @@ const tourData: Record<number, Tour> = {
         { id: 8, time: "02:00 PM", price: 250, available: 15 },
         { id: 9, time: "05:00 PM", price: 280, available: 7 },
       ],
-      reviewsList: [
+    
+    },
+  reviewsList: [
   {
     name: "Emily W.",
     rating: 5,
@@ -235,7 +237,6 @@ const tourData: Record<number, Tour> = {
     date: "2025-06-05",
   },
 ],
-    },
   },
 }
 
