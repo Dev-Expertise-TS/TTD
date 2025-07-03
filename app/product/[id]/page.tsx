@@ -215,6 +215,26 @@ const tourData: Record<number, Tour> = {
         { id: 8, time: "02:00 PM", price: 250, available: 15 },
         { id: 9, time: "05:00 PM", price: 280, available: 7 },
       ],
+      reviewsList: [
+  {
+    name: "Emily W.",
+    rating: 5,
+    comment: "Absolutely stunning day trip! The wine tasting was perfect and Pisa was magical.",
+    date: "2025-05-21",
+  },
+  {
+    name: "Carlos R.",
+    rating: 4,
+    comment: "Well organized tour and friendly guide. Would recommend for first-time visitors.",
+    date: "2025-06-10",
+  },
+  {
+    name: "Lina H.",
+    rating: 5,
+    comment: "Loved every stop, especially San Gimignano! Would do it again.",
+    date: "2025-06-05",
+  },
+],
     },
   },
 }
