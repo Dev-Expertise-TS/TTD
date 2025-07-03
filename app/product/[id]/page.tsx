@@ -219,6 +219,10 @@ export default function ProductPage({ params }: { params: { id: string } }) {
   const [currentMonth, setCurrentMonth] = useState(new Date(2025, 0)) // January 2025
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
   const [showStickyBar, setShowStickyBar] = useState(false)
+  const [currentReviewPage, setCurrentReviewPage] = useState(1);
+  const [expandedReview, setExpandedReview] = useState<number | null>(null);
+  const REVIEWS_PER_PAGE = 2;
+
 
   const bookingSummaryRef = useRef<HTMLDivElement>(null)
   const tour = tourData[1]
