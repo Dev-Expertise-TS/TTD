@@ -952,8 +952,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                   ))}
                 </div>
               </div>
-              // 후기 영역 컴포넌트
-function ReviewSection() {
+              function ReviewSection() {
   const [reviews, setReviews] = useState([
     { name: "홍길동", rating: 5, content: "정말 멋진 경험이었어요!", date: "2025-07-03" },
   ]);
@@ -1020,7 +1019,7 @@ function ReviewSection() {
       </ul>
     </div>
   );
-}
+
             </CardContent>
           </Card>
         </div>
