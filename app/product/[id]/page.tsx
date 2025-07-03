@@ -912,9 +912,6 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               </div>
             </CardContent>
           </Card>
-          import ReviewSection from "./ReviewSection"
-// ...
-<ReviewSection />
 
           {/* Cancellation & Refund Policy */}
           <Card className="shadow-lg">
